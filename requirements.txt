@@ -9,3 +9,5 @@ onnx
 onnxruntime
 onnxscript
 jupyter
+ultralytics      # YOLO traffic sign detector (training only)
+onnxslim         # used by ultralytics when exporting to ONNX

@@ -28,9 +28,10 @@ session = ort.InferenceSession(str(HERE / "traffic_sign_int8.onnx"), options,
                                providers=["CPUExecutionProvider"])
 
 
-def preprocess(image_path):
-    """EXACTLY the same steps as in training: RGB -> resize 32x32 -> 0..1 -> normalize."""
-    img = Image.open(image_path).convert("RGB").resize((IMG_SIZE, IMG_SIZE), Image.BILINEAR)
+def preprocess_image(img):
+    """A PIL image -> model input. EXACTLY the same steps as in training:
+    RGB -> resize 32x32 -> 0..1 -> normalize."""
+    img = img.convert("RGB").resize((IMG_SIZE, IMG_SIZE), Image.BILINEAR)
     x = np.asarray(img, dtype=np.float32) / 255.0      # [32, 32, 3], values 0..1
     x = x.transpose(2, 0, 1)                           # -> [3, 32, 32] (channels first, like PyTorch)
     x = (x - MEAN) / STD
@@ -42,14 +43,20 @@ def softmax(logits):
     return e / e.sum()
 
 
-def predict(image_path):
-    x = preprocess(image_path)
-    start = time.perf_counter()
-    logits = session.run(None, {"image": x})[0][0]     # [43]
-    ms = (time.perf_counter() - start) * 1000
+def classify_image(img):
+    """A PIL image (e.g. a crop from a detector) -> (class_id, class_name, confidence)."""
+    logits = session.run(None, {"image": preprocess_image(img)})[0][0]   # [43]
     probs = softmax(logits)
     best = int(probs.argmax())
-    return CLASS_NAMES[best], float(probs[best]), ms
+    return best, CLASS_NAMES[best], float(probs[best])
+
+
+def predict(image_path):
+    img = Image.open(image_path)
+    start = time.perf_counter()
+    _, name, confidence = classify_image(img)
+    ms = (time.perf_counter() - start) * 1000
+    return name, confidence, ms
 
 
 if __name__ == "__main__":

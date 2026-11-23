@@ -58,7 +58,7 @@ road photo ──► YOLO11n "where are the signs?" ──► crop (+10% border)
 | mAP50 / mAP50-95 | 0.989 / 0.863 |
 | Recall, signs < 24 px · 24–32 px · > 32 px | 95.7% · 98.7% · 100% |
 | End to end: found **and** correctly named | **358 / 361 (99.2%)**, 0 wrong names |
-| Speed on a laptop CPU (1 · 4 threads) | 136 ms · 82 ms per frame |
+| Speed on a laptop CPU (1 · 4 threads) | 93 ms · 42 ms per frame (11 · 24 FPS) |
 
 ## Limits & next steps
 
@@ -97,7 +97,10 @@ jupyter notebook
 | `traffic_sign_detector.ipynb` | [GTSDB](https://benchmark.ini.rub.de/gtsdb_dataset.html), `FullIJCNN2013.zip` | `data/gtsdb/FullIJCNN2013/` |
 
 > **AMD GPU note:** on ROCm under Windows, MIOpen may fail to compile its BatchNorm kernel.
-> The notebook sets `torch.backends.cudnn.enabled = False` to use PyTorch's built-in kernels instead.
+> The notebooks set `torch.backends.cudnn.enabled = False` to use PyTorch's built-in kernels instead.
+
+> **Training time:** the YOLO detector took about 4 hours (50 epochs) on an AMD Radeon 860M laptop GPU.
+> The training cell skips training when `runs/gtsdb/yolo11n_signs/weights/best.pt` already exists; delete that folder to train again.
 
 ## Credits
 

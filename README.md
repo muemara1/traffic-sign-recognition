@@ -4,6 +4,8 @@
 ![PyTorch](https://img.shields.io/badge/PyTorch-CUDA-ee4c2c?logo=pytorch&logoColor=white)
 ![ONNX](https://img.shields.io/badge/ONNX-Runtime-005ced?logo=onnx&logoColor=white)
 
+**▶ [Try the live demo on Hugging Face](https://huggingface.co/spaces/muemara/traffic-sign-detection)**: upload a road photo and both models run in your browser.
+
 Training a good classifier is the easy part. Car makers care about **size, speed and running without a big framework**. This project goes all the way from data to a standalone app: first a classifier for cropped signs, then a detector that finds the signs in a full road photo.
 
 | Part | Data | Key result |
